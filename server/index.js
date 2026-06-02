@@ -27,7 +27,8 @@ app.use(helmet({
     crossOriginResourcePolicy : false
 }))
 
-const PORT = 8080 || process.env.PORT 
+const PORT = 8090 || process.env.PORT 
+//changed the port to 8090 from 8080 , cause 8080 occupied by jenkinns by default
 
 app.get("/",(request,response)=>{
     ///server to client
