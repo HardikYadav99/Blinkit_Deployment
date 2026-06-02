@@ -5,7 +5,7 @@ pipeline {
         stage ('code checkout'){
             steps {
                 echo 'pulling code from github'
-                checkou scm
+                checkout scm
             }
         }
         stage ('Inject Production Variable' ){
