@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+#1. The Database
+  mongo:
+    image: mongo:latest
+    container_name: blinkit_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./server
+    container_name: blinkit_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    env_file:
+      - ./server/.env
+  
+  frontend:
+    build:
+      context: ./client
+    container_name: blinkit_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    env_file:
+      - ./client/.env
+
+volumes:
+  mongo_data:
