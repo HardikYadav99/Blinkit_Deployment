@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    stages{
+        stage ('code checkout'){
+            steps {
+                echo 'pulling code from github'
+                checkoutscm
+            }
+        }
+        stage ('Inject Production Variable' ){
+            steps {
+                echo 'injecting production variabe'
+                sh 'cp /home/ubuntu/secret-app/.env.backend ./server/.env'
+                sh 'cp /home/ubuntu/secret-app/.env.frontend .client/.env'
+            }
+        }
+        stage ('building and orchestrate new containers'){
+            steps{
+                echo 'dismantling old containers building new one'
+                sh 'docker-compose down'
+                sh 'docker-compose up -d --build'
+            }
+        }
+        stage ('clean up the working enviornment'){
+            steps{
+                echo 'removing images to save space'
+                sh 'docker image prune -f'
+            }
+        }
+    }
+    psot {
+        success {
+            echo '🚀 Pipeline successful! Blinkit Clone is live on AWS EC2!'
+        }
+        failure {
+            echo '❌ Pipeline failed. Review the console logs to diagnose.'
+        }
+    }
+}
