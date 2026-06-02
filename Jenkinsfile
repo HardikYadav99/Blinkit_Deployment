@@ -5,7 +5,7 @@ pipeline {
         stage ('code checkout'){
             steps {
                 echo 'pulling code from github'
-                checkoutscm
+                checkou scm
             }
         }
         stage ('Inject Production Variable' ){
@@ -29,7 +29,7 @@ pipeline {
             }
         }
     }
-    psot {
+    post {
         success {
             echo '🚀 Pipeline successful! Blinkit Clone is live on AWS EC2!'
         }
