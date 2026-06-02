@@ -1,8 +1,9 @@
-export const baseURL = import.meta.env.VITE_API_URL
+export const backendDomain = "http://3.86.214.35:8090";
+//export const baseURL = import.meta.env.VITE_API_URL
 
 const SummaryApi = {
     register : {
-        url : '/api/user/register',
+        url : backendDomain + '/api/user/register',
         method : 'post'
     },
     login : {
