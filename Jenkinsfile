@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    stages{
+    stages {
         stage ('code checkout'){
             steps {
                 echo 'pulling code from github'
@@ -10,9 +10,9 @@ pipeline {
         }
         stage ('Inject Production Variable' ){
             steps {
-                echo 'injecting production variabe'
+                echo 'injecting production variable'
                 sh 'cp /home/ubuntu/secret-app/.env.backend ./server/.env'
-                sh 'cp /home/ubuntu/secret-app/.env.frontend .client/.env'
+                sh 'cp /home/ubuntu/secret-app/.env.frontend ./client/.env'
             }
         }
         stage ('building and orchestrate new containers'){
@@ -22,7 +22,7 @@ pipeline {
                 sh 'docker-compose up -d --build'
             }
         }
-        stage ('clean up the working enviornment'){
+        stage ('clean up the working environment'){
             steps{
                 echo 'removing images to save space'
                 sh 'docker image prune -f'
