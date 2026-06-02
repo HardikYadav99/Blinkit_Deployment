@@ -15,7 +15,7 @@ services:
       context: ./server
     container_name: blinkit_backend
     ports:
-      - "8080:8080"
+      - "8090:8090"
     depends_on:
       - mongo
     env_file:
