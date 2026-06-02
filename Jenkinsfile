@@ -11,8 +11,8 @@ pipeline {
         stage ('Inject Production Variable' ){
             steps {
                 echo 'injecting production variable'
-                sh 'sudo cp /home/ubuntu/secret-app/.env.backend ./server/.env'
-                sh 'sudo cp /home/ubuntu/secret-app/.env.frontend ./client/.env'
+                sh 'cp /home/ubuntu/secret-app/.env.backend ./server/.env'
+                sh 'cp /home/ubuntu/secret-app/.env.frontend ./client/.env'
             }
         }
         stage ('building and orchestrate new containers'){
