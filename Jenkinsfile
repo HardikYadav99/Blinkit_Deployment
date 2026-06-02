@@ -19,7 +19,8 @@ pipeline {
             steps{
                 echo 'dismantling old containers building new one'
                 sh 'docker-compose down'
-                sh 'docker-compose up -d --build'
+                sh 'docker-compose build --no-cache'
+                sh 'docker-compose up -d'
             }
         }
         stage ('clean up the working environment'){
