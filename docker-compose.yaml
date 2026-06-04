@@ -1,15 +1,6 @@
 version: '3.8'
 
 services:
-#1. The Database
-  mongo:
-    image: mongo:latest
-    container_name: blinkit_mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - /mongo_data:/data/db
-      #added persistent volume to a fixed path in EC2 so docker and jenkins both does not have permisson to destroy or change or building they can just push and put data
 
   backend:
     build:
@@ -17,8 +8,6 @@ services:
     container_name: blinkit_backend
     ports:
       - "8090:8090"
-    depends_on:
-      - mongo
     env_file:
       - ./server/.env
   
