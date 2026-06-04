@@ -129,11 +129,12 @@ export const getProductByCategory = async(request,response)=>{
 
 export const getProductByCategoryAndSubCategory  = async(request,response)=>{
     try {
-        const { categoryId,subCategoryId,page,limit } = request.body
+        let { categoryId,subCategoryId,page,limit } = request.body
 
-        if(!categoryId || !subCategoryId){
+        // 1. Only demand the categoryId
+        if(!categoryId){
             return response.status(400).json({
-                message : "Provide categoryId and subCategoryId",
+                message : "Provide categoryId",
                 error : true,
                 success : false
             })
@@ -147,9 +148,14 @@ export const getProductByCategoryAndSubCategory  = async(request,response)=>{
             limit = 10
         }
 
+        // 2. Base query strictly uses category
         const query = {
-            category : { $in :categoryId  },
-            subCategory : { $in : subCategoryId }
+            category : { $in :categoryId  }
+        }
+
+        // 3. Optional chaining for subCategory
+        if(subCategoryId){
+            query.subCategory = { $in : subCategoryId }
         }
 
         const skip = (page - 1) * limit
