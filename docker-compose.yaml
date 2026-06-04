@@ -9,6 +9,7 @@ services:
       - "27017:27017"
     volumes:
       - /opt/blinkit_db:/data/db
+      #added persistent volume to a fixed path in EC2 so docker and jenkins both does not have permisson to destroy or change or building they can just push and put data
 
   backend:
     build:
