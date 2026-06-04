@@ -62,9 +62,11 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
 
         return filterData ? true : null
       })
-      const url = `/${valideURLConvert(name)}-${id}/${valideURLConvert(subcategory?.name)}-${subcategory?._id}`
-
-      return url
+      let url = '$/{validateURLConvert(name)}-${id}'
+      if (subcategory) {
+        url += '$/{validateURLConvert(subcategory.name)}-${id}'
+      }
+      return url 
   }
 
   const redirectURL =  handleRedirectProductListpage()
