@@ -20,7 +20,7 @@ pipeline {
                 echo 'dismantling old containers building new one'
                 sh 'docker-compose down'
                 sh 'docker-compose build --no-cache'
-                sh 'docker-compose up -d --remove-orphans'
+                sh 'docker-compose up -d --build --remove-orphans'
             }
         }
         stage ('clean up the working environment'){
