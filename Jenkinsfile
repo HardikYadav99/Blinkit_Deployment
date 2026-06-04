@@ -18,7 +18,7 @@ pipeline {
         stage ('building and orchestrate new containers'){
             steps{
                 echo 'dismantling old containers building new one'
-                sh 'docker-compose down -v'
+                sh 'docker-compose down'
                 sh 'docker-compose build --no-cache'
                 sh 'docker-compose up -d'
             }
