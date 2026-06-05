@@ -1,41 +1,58 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_REGION = 'us-east-1'
+        AWS_ACCOUNT_ID = '746486152802'
+
+        FRONTEND_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/blinkit-frontend"
+        BACKEND_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/blinkit-backend"
+
+        IMAGE_TAG = "v${env.BUILD_ID}"
+    }
+
     stages {
-        stage ('code checkout'){
+        stage('Clean Workspace') {
             steps {
-                echo 'pulling code from github'
+                echo "Clean up workspace"
+                cleanWs()
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                echo "Checkout Code"
                 checkout scm
             }
         }
-        stage ('Inject Production Variable' ){
+        
+        stage('Build Docker Images') {
             steps {
-                echo 'injecting production variable'
-                sh 'cp /opt/app-secrets/.env.backend ./server/.env'
-                sh 'cp /opt/app-secrets/.env.frontend ./client/.env'
+                script {
+                    echo "Building frontend Docker Image"
+                    sh "docker build -t ${FRONTEND_REPO}:${IMAGE_TAG} ./client"
+
+                    echo "Building backend docker image"
+                    sh "docker build -t ${BACKEND_REPO}:${IMAGE_TAG} ./server"
+                }
             }
         }
-        stage ('building and orchestrate new containers'){
-            steps{
-                echo 'dismantling old containers building new one'
-                sh 'docker-compose down'
-                sh 'docker-compose build --no-cache'
-                sh 'docker-compose up -d --build --remove-orphans'
+        
+        stage('Push to AWS ECR') {
+            steps {
+                script {
+                    echo "Logging in to amazon ecr"
+                    sh """
+                    aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    """
+                    
+                    echo "Pushing Frontend Image"
+                    sh "docker push ${FRONTEND_REPO}:${IMAGE_TAG}"
+
+                    echo "Pushing backend image"
+                    sh "docker push ${BACKEND_REPO}:${IMAGE_TAG}"
+                }
             }
-        }
-        stage ('clean up the working environment'){
-            steps{
-                echo 'removing images to save space'
-                sh 'docker image prune -f'
-            }
-        }
-    }
-    post {
-        success {
-            echo '🚀 Pipeline successful! Blinkit Clone is live on AWS EC2!'
-        }
-        failure {
-            echo '❌ Pipeline failed. Review the console logs to diagnose.'
         }
     }
 }
