@@ -2,7 +2,7 @@ import axios from "axios";
 import SummaryApi , { backendDomain } from "../common/SummaryApi";
 
 const Axios = axios.create({
-    baseURL : backendDomain,
+    baseURL : "/api",
     withCredentials : true
 })
 
