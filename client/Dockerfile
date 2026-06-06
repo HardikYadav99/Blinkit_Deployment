@@ -21,4 +21,4 @@ EXPOSE 80
 
 CMD [ "nginx", "-g" , "daemon off;"]
 
-#comment to make pipeline work by get method
+#comment to make pipeline work by get method 1.0
