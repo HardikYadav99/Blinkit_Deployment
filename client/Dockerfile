@@ -7,6 +7,8 @@ RUN npm install
 
 COPY . .
 
+# Force Vite to bake the relative path into the static JS production bundle
+ENV VITE_API_URI=/api
 RUN npm run build
 
 FROM nginx:alpine

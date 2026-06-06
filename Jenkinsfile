@@ -54,5 +54,33 @@ pipeline {
                 }
             }
         }
+
+        stage('Update Kubernetes Manifests') {
+            steps {
+                withCredentials([string(credentialsId: 'jenkins-gitops-token', variable: 'GITHUB_TOKEN')]) {
+                    script {
+                        echo "Cloning Infrastructure Repository..."
+                        sh "git clone https://${GITHUB_TOKEN}@github.com/HardikYadav99/blinkit-eks-infra.git"
+                        
+                        dir('blinkit-eks-infra') {
+                            echo "Dynamically updating image tags to ${IMAGE_TAG}..."
+                            
+                            // Using standard Linux sed to find any matching image string and swap it out
+                            sh "sed -i 's|image: .*/blinkit-frontend:.*|image: ${FRONTEND_REPO}:${IMAGE_TAG}|g' k8s/frontend.yaml"
+                            sh "sed -i 's|image: .*/blinkit-backend:.*|image: ${BACKEND_REPO}:${IMAGE_TAG}|g' k8s/backend.yaml"
+                            
+                            echo "Committing and pushing updated manifests to GitOps Repo..."
+                            sh "git config user.email 'jenkins@hardik-devops.com'"
+                            sh "git config user.name 'Jenkins CI'"
+                            sh "git add k8s/frontend.yaml k8s/backend.yaml"
+                            
+                            // [skip ci] prevents an infinite loop if your infra repo triggers other builds
+                            sh "git commit -m 'automated: update image tags to ${IMAGE_TAG} [skip ci]'"
+                            sh "git push origin main"
+                        }
+                    }
+                }
+            }
+        }
     }
 }
