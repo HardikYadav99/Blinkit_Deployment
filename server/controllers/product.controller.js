@@ -271,6 +271,7 @@ export const deleteProductDetails = async(request,response)=>{
 }
 
 //search product
+// search product
 export const searchProduct = async(request,response)=>{
     try {
         let { search, page , limit } = request.body 
@@ -306,8 +307,9 @@ export const searchProduct = async(request,response)=>{
             limit : limit 
         })
 
-
     } catch (error) {
+        // This log will pinpoint the "Text Index" error in your terminal
+        console.error("SEARCH PRODUCT ERROR:", error); 
         return response.status(500).json({
             message : error.message || error,
             error : true,
