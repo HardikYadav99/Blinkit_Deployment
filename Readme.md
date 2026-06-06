@@ -3,7 +3,7 @@
 A production-grade grocery delivery platform built with the MERN stack, containerized using Docker, and orchestrated on AWS EKS using a GitOps workflow.
 
 ## 🚀 Architecture Overview
-[Image of an end-to-end CI/CD and deployment architecture diagram]
+
 
 This project demonstrates a professional DevOps lifecycle, separating application logic from infrastructure configuration to meet industry standards.
 
