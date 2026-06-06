@@ -70,22 +70,17 @@ const CheckoutPage = () => {
       const { data: responseData } = response;
       console.log("Backend Response:", responseData);
 
-      if (responseData && responseData.id) {
+      // FIX: Use the direct URL provided by Stripe instead of redirectToCheckout
+      if (responseData && responseData.url) {
+        window.location.href = responseData.url;
+      } else if (responseData && responseData.id) {
+        // Fallback to redirectToCheckout if url is missing
         const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-        
         const result = await stripe.redirectToCheckout({ sessionId: responseData.id });
-        
-        if (result.error) {
-          throw new Error(result.error.message);
-        }
+        if (result.error) throw new Error(result.error.message);
       } else {
-        throw new Error("Invalid session ID received from server");
+        throw new Error("Invalid session data received from server");
       }
-
-      toast.dismiss(loadingToast);
-      
-      if (fetchCartItem) fetchCartItem();
-      if (fetchOrder) fetchOrder();
 
     } catch (error) {
       if (loadingToast) toast.dismiss(loadingToast);
