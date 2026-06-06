@@ -30,11 +30,10 @@ This project demonstrates a professional DevOps lifecycle, separating applicatio
 
 ## 📺 Project Demo
 Watch the full architectural walkthrough here:
-[**YouTube: Full-Stack Architecture on AWS EKS**](INSERT_YOUR_YOUTUBE_LINK_HERE)
+[**YouTube: Full-Stack Architecture on AWS EKS**](https://youtu.be/8oiIAg-Q1js)
 
 ## 👤 Connect With Me
-* **LinkedIn:** [Hardik Yadav](INSERT_YOUR_LINKEDIN_PROFILE_LINK_HERE)
-* **GitHub:** [hardikyadav](https://github.com/hardikyadav)
+* **LinkedIn:** [Hardik Yadav](https://www.linkedin.com/in/hardik-yadav-54458630a/)
 
 ---
 *Built with passion for automation and scalable systems.*
