@@ -52,34 +52,45 @@ const CheckoutPage = () => {
       }
   }
 
-  const handleOnlinePayment = async()=>{
+  const handleOnlinePayment = async () => {
+    let loadingToast;
     try {
-        toast.loading("Loading...")
-        const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
-        const stripePromise = await loadStripe(stripePublicKey)
-       
-        const response = await Axios({
-            ...SummaryApi.payment_url,
-            data : {
-              list_items : cartItemsList,
-              addressId : addressList[selectAddress]?._id,
-              subTotalAmt : totalPrice,
-              totalAmt :  totalPrice,
-            }
-        })
+      loadingToast = toast.loading("Redirecting to payment...");
+      
+      const response = await Axios({
+        ...SummaryApi.payment_url,
+        data: {
+          list_items: cartItemsList,
+          addressId: addressList[selectAddress]?._id,
+          subTotalAmt: totalPrice,
+          totalAmt: totalPrice,
+        }
+      });
 
-        const { data : responseData } = response
+      const { data: responseData } = response;
+      console.log("Backend Response:", responseData);
 
-        stripePromise.redirectToCheckout({ sessionId : responseData.id })
+      if (responseData && responseData.id) {
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
         
-        if(fetchCartItem){
-          fetchCartItem()
+        const result = await stripe.redirectToCheckout({ sessionId: responseData.id });
+        
+        if (result.error) {
+          throw new Error(result.error.message);
         }
-        if(fetchOrder){
-          fetchOrder()
-        }
+      } else {
+        throw new Error("Invalid session ID received from server");
+      }
+
+      toast.dismiss(loadingToast);
+      
+      if (fetchCartItem) fetchCartItem();
+      if (fetchOrder) fetchOrder();
+
     } catch (error) {
-        AxiosToastError(error)
+      if (loadingToast) toast.dismiss(loadingToast);
+      AxiosToastError(error);
+      console.error("Payment error:", error);
     }
   }
   return (
